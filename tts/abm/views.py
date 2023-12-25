@@ -3,7 +3,6 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .forms import BookUploadForm
 import PyPDF2
-from ebooklib import epub
 from bs4 import BeautifulSoup
 
 CHUNK_SIZE = 1024
@@ -21,13 +20,6 @@ def extractTextFromPdf(filePath):
     for pageNum in range(len(pdfReader.pages)):
         page = pdfReader.pages[pageNum]
         text += page.extract_text()
-    return text
-
-
-def extractTextFromEpub(filePath):
-    file = filePath.read()
-    epubBook = epub.read_epub(file)
-    text = ' '.join(item.get_content().decode('utf-8') for item in epubBook.get_items_of_type('text'))
     return text
 
 def extractTextFromTxt(filePath):
@@ -54,8 +46,6 @@ def index(request):
 
             if bookExtension == 'pdf':
                 text = extractTextFromPdf(book)
-            elif bookExtension == 'epub':
-                text = extractTextFromEpub(book)
             elif bookExtension == 'txt':
                 text = extractTextFromTxt(book)
             elif bookExtension == 'html':
@@ -76,9 +66,6 @@ def index(request):
             if response.status_code == 200:
                 response = HttpResponse(response.content, content_type='audio/mp3')
                 response['Content-Disposition'] = f'attachment; filename="{ bookName }"'
-                for chunk in response.iter_content(chunk_size=CHUNK_SIZE):
-                    if chunk:
-                        response.write(chunk)
                 return response
     else:
         form = BookUploadForm()
