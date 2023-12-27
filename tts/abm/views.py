@@ -36,22 +36,30 @@ def index(request):
     if request.method == "POST":
         form = BookUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            book = request.FILES['book']
+            inputText = form.cleaned_data.get('inputText')
 
             bookName = form.cleaned_data.get('bookName', 'output.mp3')
             if bookName[-4:] != ".mp3":
                 bookName += ".mp3"
 
-            bookExtension = book.name.split('.')[-1].lower()
+            if not inputText:
 
-            if bookExtension == 'pdf':
-                text = extractTextFromPdf(book)
-            elif bookExtension == 'txt':
-                text = extractTextFromTxt(book)
-            elif bookExtension == 'html':
-                text = extractTextFromHtml(book)
+                book = request.FILES['book']
+
+                bookExtension = book.name.split('.')[-1].lower()
+
+                if bookExtension == 'pdf':
+                    text = extractTextFromPdf(book)
+                elif bookExtension == 'txt':
+                    text = extractTextFromTxt(book)
+                elif bookExtension == 'html':
+                    text = extractTextFromHtml(book)
+                else:
+                    text = "Unsupported file type"
             else:
-                text = "Unsupported file type"
+                text = inputText
+
+            print(f"length is {len(text)}")
 
             data = {
                 "text": text,

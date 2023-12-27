@@ -31,6 +31,10 @@
         <form method="post" enctype="multipart/form-data" class="my-4">
             {% csrf_token %}
             <div class="mb-3">
+                {{ form.inputText.label_tag }}
+                {{ form.inputText }}
+            </div>
+            <div class="mb-3">
                 {{ form.book.label_tag }}
                 {{ form.book }}
             </div>
