@@ -32,7 +32,7 @@
             {% csrf_token %}
             <div class="mb-3">
                 {{ form.inputText.label_tag }}
-                {{ form.inputText }}
+                {{ form.inputText }} (only 2500 characters)
             </div>
             <div class="mb-3">
                 {{ form.book.label_tag }}

@@ -59,22 +59,21 @@ def index(request):
             else:
                 text = inputText
 
-            print(f"length is {len(text)}")
-
-            data = {
-                "text": text,
-                "model_id": "eleven_monolingual_v1",
-                "voice_settings": {
-                    "stability": 0.5,
-                    "similarity_boost": 0.5
+            if len(text) <= 2500:
+                data = {
+                    "text": text,
+                    "model_id": "eleven_monolingual_v1",
+                    "voice_settings": {
+                        "stability": 0.5,
+                        "similarity_boost": 0.5
+                    }
                 }
-            }
 
-            response = requests.post(url, json=data, headers=headers)
-            if response.status_code == 200:
-                response = HttpResponse(response.content, content_type='audio/mp3')
-                response['Content-Disposition'] = f'attachment; filename="{ bookName }"'
-                return response
+                response = requests.post(url, json=data, headers=headers)
+                if response.status_code == 200:
+                    response = HttpResponse(response.content, content_type='audio/mp3')
+                    response['Content-Disposition'] = f'attachment; filename="{ bookName }"'
+                    return response
     else:
         form = BookUploadForm()
 
